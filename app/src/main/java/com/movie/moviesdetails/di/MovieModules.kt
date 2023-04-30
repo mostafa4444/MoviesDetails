@@ -16,12 +16,12 @@ object MovieModules {
 
     @ViewModelScoped
     @Provides
-    fun provideMoviesService(retrofit: Retrofit) =
+    fun provideMoviesService(retrofit: Retrofit): MovieServices =
         retrofit.create(MovieServices::class.java)
 
     @ViewModelScoped
     @Provides
-    fun provideAuthRepository(service: MovieServices): MovieRepository =
+    fun provideMoviesRepository(service: MovieServices): MovieRepository =
         MovieRepositoryImpl(apiServices = service)
 
 }

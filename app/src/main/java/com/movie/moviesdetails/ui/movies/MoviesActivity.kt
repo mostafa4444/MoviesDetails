@@ -4,7 +4,9 @@ import com.movie.moviesdetails.R
 import com.movie.moviesdetails.base.BaseNavigationGraphActivity
 import com.movie.moviesdetails.base.BaseViewModel
 import com.movie.moviesdetails.databinding.ActivityMoviesBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MoviesActivity : BaseNavigationGraphActivity<BaseViewModel , ActivityMoviesBinding>() {
     override fun getNavFragmentContainerId() = R.id.movies_fragment_container
     override fun getContentView() = R.layout.activity_movies
