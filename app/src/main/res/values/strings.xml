@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MoviesDetails</string>
+    <string name="general_error">Something went wrong, plz try again later</string>
+    <string name="loading">Loading…</string>
 </resources>
