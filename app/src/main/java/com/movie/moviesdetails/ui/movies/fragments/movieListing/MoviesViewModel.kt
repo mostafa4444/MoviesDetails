@@ -4,9 +4,12 @@ import androidx.lifecycle.viewModelScope
 import com.movie.moviesdetails.base.BaseViewModel
 import com.movie.moviesdetails.models.movies.MoviesResponse
 import com.movie.moviesdetails.models.network.DataState
+import com.movie.moviesdetails.models.network.ProgressBarState
 import com.movie.moviesdetails.usecases.movies.GetMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -18,8 +21,9 @@ class MoviesViewModel @Inject constructor(
 ) : BaseViewModel(){
 
 
-    private val _getMoviesState: MutableSharedFlow<DataState<MoviesResponse>> = MutableSharedFlow()
-    val moviesState = _getMoviesState.asSharedFlow()
+    private val _moviesState: MutableStateFlow<DataState<MoviesResponse>> = MutableStateFlow(DataState.Loading(
+        ProgressBarState.Idle))
+    val moviesState: StateFlow<DataState<MoviesResponse>> = _moviesState
 
     init {
         getMovies()
@@ -28,13 +32,13 @@ class MoviesViewModel @Inject constructor(
         getMoviesUseCase.execute().onEach { dataState ->
             when(dataState){
                 is DataState.Success ->{
-                    _getMoviesState.emit(DataState.Success(dataState.data))
+                    _moviesState.value  = dataState.copy(dataState.data)
                 }
                 is DataState.Error ->{
-                    _getMoviesState.emit(DataState.Error(dataState.exception))
+                    _moviesState.value  = dataState.copy(dataState.exception)
                 }
                 is DataState.Loading ->{
-                    _getMoviesState.emit(DataState.Loading(dataState.progressBarState))
+                    _moviesState.value  = dataState.copy(dataState.progressBarState)
                 }
             }
         }.launchIn(viewModelScope)

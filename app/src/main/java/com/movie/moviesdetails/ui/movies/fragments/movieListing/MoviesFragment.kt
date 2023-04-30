@@ -7,6 +7,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.movie.moviesdetails.R
@@ -39,7 +40,6 @@ class MoviesFragment : BaseFragment<MoviesViewModel , FragmentMoviesBinding>(){
 
     override fun getContentView() = R.layout.fragment_movies
 
-    private val TAG = "MoviesFragment"
     private fun observeMovies(){
         lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -61,9 +61,9 @@ class MoviesFragment : BaseFragment<MoviesViewModel , FragmentMoviesBinding>(){
                         }
                         is DataState.Loading ->{
                             if (dataState.progressBarState == ProgressBarState.Idle){
-                                viewBinding.apiStatus.showLoading(true)
-                            }else{
                                 viewBinding.apiStatus.showLoading(false)
+                            }else{
+                                viewBinding.apiStatus.showLoading(true)
                             }
                         }
                     }
@@ -89,7 +89,8 @@ class MoviesFragment : BaseFragment<MoviesViewModel , FragmentMoviesBinding>(){
                     results ,
                     object : BaseAdapterItemClickListener<MovieItem>{
                         override fun onItemClicked(item: MovieItem, position: Int) {
-                            Toast.makeText(context , "${item.original_title} Clicked" , Toast.LENGTH_SHORT).show()
+                            val action = MoviesFragmentDirections.actionMoviesFragmentToMovieDetailsFragment(movieId = item.id)
+                            findNavController().navigate(action)
                         }
 
                     }
@@ -103,7 +104,7 @@ class MoviesFragment : BaseFragment<MoviesViewModel , FragmentMoviesBinding>(){
     fun TextView.showLoading(show: Boolean){
         if(show){
             viewBinding.swipeToRefresh.isRefreshing = true
-            this.text = "Loading..."
+            this.text = getString(R.string.loading)
             this.visibility = View.VISIBLE
         }else {
             viewBinding.swipeToRefresh.isRefreshing = false
@@ -112,7 +113,7 @@ class MoviesFragment : BaseFragment<MoviesViewModel , FragmentMoviesBinding>(){
         }
     }
 
-    fun TextView.showError(show: Boolean , msg: String = "Something went wrong, Plz try again later"){
+    fun TextView.showError(show: Boolean , msg: String = getString(R.string.general_error)){
         if(show){
             viewBinding.swipeToRefresh.isRefreshing = false
             this.text = msg
