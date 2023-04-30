@@ -33,6 +33,17 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+
+    buildFeatures{
+        dataBinding = true
+        viewBinding = true
+    }
+
+    bundle {
+        language {
+            enableSplit = false
+        }
+    }
 }
 
 dependencies {
@@ -64,9 +75,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.10")
-
-    // timber
-    implementation("com.jakewharton.timber:timber:4.7.1")
 
     // Image Picker && Glide
     implementation("com.github.bumptech.glide:glide:4.14.2")
